@@ -21,7 +21,7 @@ function TentForm() {
     useEffect(() => {
         setShopData((oldData) => {
             let newData = {...oldData};
-            newData.activeStep = 1;
+            newData.progress.activeStep = 1;
             return newData;
         });
     }, [setShopData]);

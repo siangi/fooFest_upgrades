@@ -46,7 +46,6 @@ function CampgroundForm() {
     const [checkOnChange, setcheckOnChange] = useState(false);
 
     useEffect(() => {
-        console.log(shopData.greenCamping);
         axios.get("https://cphrt.herokuapp.com/available-spots")
             .then((response) => setCampgrounds(response.data));
     });
@@ -54,7 +53,7 @@ function CampgroundForm() {
     useEffect(() => {
         setShopData((oldData) => {
             let newData = {...oldData};
-            newData.activeStep = 2;
+            newData.progress.activeStep = 2;
             return newData;
         });
     }, [setShopData])

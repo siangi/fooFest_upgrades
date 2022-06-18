@@ -56,7 +56,7 @@ function Basket() {
   useEffect(() => {
     setShopData((oldData) => {
         let newData = {...oldData};
-        newData.activeStep = 4;
+        newData.progress.activeStep = 4;
         return newData;
     });
   }, [setShopData]);

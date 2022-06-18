@@ -12,12 +12,12 @@ function ProgressStepsBar(props) {
                 if(index < props.steps.length - 1){
                     return (
                         <>
-                            <StepIndicator key={index} {...step} active={shopData.activeStep === index}></StepIndicator>
+                            <StepIndicator key={index} {...step} active={shopData.progress.activeStep === index} validator={shopData.progress.validator}></StepIndicator>
                             {/* do this with a :after for list key problems */}
                             <div key={Math.random()} className='h-0 border-2 border-darkmode_black6 flex-auto'></div>
                         </>)
                 } else {
-                    return (<StepIndicator key={index} {...step} active={shopData.activeStep === index}></StepIndicator>)
+                    return (<StepIndicator key={index} {...step} active={shopData.progress.activeStep === index} validator={shopData.progress.validator}></StepIndicator>)
                 }
             })
         }

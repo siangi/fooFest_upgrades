@@ -18,7 +18,6 @@ function TicketForm() {
     const toUpdate = ticketOptions.find((ticket) => ticket.id === id);
     if(toUpdate !== undefined){
       toUpdate.amount = newAmount;
-      // console.log("set amount " + newAmount + " on " + toUpdate.title + "is now" + toUpdate.amount)
 
       if(checkOnChange){
         validate();
@@ -50,7 +49,7 @@ function TicketForm() {
   useEffect(() => {
     setShopData((oldData) => {
         let newData = {...oldData};
-        newData.activeStep = 0;
+        newData.progress.activeStep = 0;
         return newData;
     });
   }, [setShopData]);

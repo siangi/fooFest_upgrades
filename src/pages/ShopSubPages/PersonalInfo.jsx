@@ -20,7 +20,7 @@ function PersonalInfo() {
   useEffect(() => {
     setShopData((oldData) => {
         let newData = {...oldData};
-        newData.activeStep = 3;
+        newData.progress.activeStep = 3;
         return newData;
     });
   }, [setShopData])

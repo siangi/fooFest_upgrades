@@ -14,7 +14,7 @@ function PaymentContainer(props) {
     if(confirmed){
       navigate("/confirmation");
     } else {
-      console.log("not fulfilled in function");
+      console.error("not fulfilled in function");
     }
   }
   return (
