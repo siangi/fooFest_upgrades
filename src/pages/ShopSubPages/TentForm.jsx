@@ -22,9 +22,10 @@ function TentForm() {
         setShopData((oldData) => {
             let newData = {...oldData};
             newData.progress.activeStep = 1;
+            newData.progress.validator = checkTentValidity;
             return newData;
         });
-    }, [setShopData]);
+    }, []);
     
 
     function calculateTentSuggestion(amountOfPeople){

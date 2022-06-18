@@ -21,12 +21,21 @@ function PersonalInfo() {
     setShopData((oldData) => {
         let newData = {...oldData};
         newData.progress.activeStep = 3;
+        newData.progress.validator = validateByLength;
         return newData;
     });
   }, [setShopData])
 
   function submitAll(){
     navigate("../basket")
+  }
+
+  // since only valid info forms are added to the array, 
+  // we can change if all info forms have been filled by
+  // checking the length of it. 
+  // this prevents doing a complicated validate() call on the person form.
+  function validateByLength(){
+    return shopData.persons.length === amountOfRegular + amountOfVIP;
   }
 
   function saveForm(personInfo){

@@ -57,6 +57,7 @@ function Basket() {
     setShopData((oldData) => {
         let newData = {...oldData};
         newData.progress.activeStep = 4;
+        newData.progress.validator = null;
         return newData;
     });
   }, [setShopData]);

@@ -50,6 +50,7 @@ function TicketForm() {
     setShopData((oldData) => {
         let newData = {...oldData};
         newData.progress.activeStep = 0;
+        newData.progress.validator = validate;
         return newData;
     });
   }, [setShopData]);

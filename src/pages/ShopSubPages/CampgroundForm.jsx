@@ -54,9 +54,10 @@ function CampgroundForm() {
         setShopData((oldData) => {
             let newData = {...oldData};
             newData.progress.activeStep = 2;
+            newData.progress.validator = validate;
             return newData;
         });
-    }, [setShopData])
+    }, [])
     
     function amountOfTickets(){
         return shopData.tickets.reduce((prev, cur) => prev + cur.amount, 0);

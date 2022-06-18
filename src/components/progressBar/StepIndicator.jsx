@@ -4,7 +4,6 @@ import {useNavigate} from "react-router-dom";
 function StepIndicator(props) {
   const navigate = useNavigate();
   function tryNavigate(){
-    console.log("daadsa")
     if(props.validator === null || props.validator()){
         navigate(props.url);
     }
