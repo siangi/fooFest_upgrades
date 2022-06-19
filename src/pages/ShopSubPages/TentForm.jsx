@@ -9,12 +9,12 @@ import P from '../../components/typography/P';
 import H4 from '../../components/typography/H4';
 import H2 from '../../components/typography/H2';
 import ErrorP from '../../components/typography/ErrorP';
+import ShopHelpers from "../../models/ShopHelpers";
 
 function TentForm() {
     const {shopData, setShopData} = useContext(ShopContext);
     let navigate = useNavigate();
-    let amountOfTickets = shopData.tickets.reduce((previousValue, currentValue) => {return previousValue + currentValue.amount}, 0);
-    const tentOptions = shopData.tents;
+    let amountOfTickets = ShopHelpers.getAmountOfAllTickets(shopData);
     const [formValid, setFormValid] = useState(true);
     const [checkOnChange, setcheckOnChange] = useState(false);
 
@@ -25,17 +25,17 @@ function TentForm() {
             newData.progress.validator = checkTentValidity;
             return newData;
         });
-    }, []);
+    }, [setShopData]);
     
 
     function calculateTentSuggestion(amountOfPeople){
         let leftoverPeople = amountOfPeople;
-        tentOptions.sort((a, b) => {
+        shopData.tents.sort((a, b) => {
             return a.amountOfPeople > b.amountOfPeople
         });
 
-        tentOptions.forEach((tentOption, index) => {
-            if(index < tentOptions.length - 1){
+        shopData.tents.forEach((tentOption, index) => {
+            if(index < shopData.tents.length - 1){
                 tentOption.amountOfTents = Math.floor(leftoverPeople / tentOption.spaceForPeople);
                 leftoverPeople = leftoverPeople % tentOption.spaceForPeople;
             } else {
@@ -46,16 +46,8 @@ function TentForm() {
         })
     }
 
-    function getAmountOfSpace(){
-        let availableSpace = 0;
-        tentOptions.forEach((tentOption) => {
-            availableSpace += tentOption.amountOfTents * tentOption.spaceForPeople;
-        });
-        return availableSpace;
-    }
-
     function checkTentValidity(){
-        let isValid = getAmountOfSpace() >= amountOfTickets
+        let isValid = ShopHelpers.validateTentChoice(shopData);
         setFormValid(isValid);
         return isValid;
     }
@@ -63,7 +55,8 @@ function TentForm() {
     function noTents(){
         setShopData((oldData) => {
             let newData = {...oldData};
-            newData.tents = [];
+            newData.ownTents = true;
+            newData.tents = oldData.tents.map((tentOption) => tentOption.amountOfTents = -1);
             return newData;
         })
         navigate("../campground");
@@ -75,7 +68,7 @@ function TentForm() {
         if(checkTentValidity()){
             setShopData((oldData) => {
                 let newData = {...oldData};
-                newData.tents = tentOptions;
+                newData.ownTents = false;
                 return newData;
             });
             navigate("../campground");
@@ -83,14 +76,24 @@ function TentForm() {
     }
 
     function updateAmount(id, newAmount){
-        const toUpdate = tentOptions.find((tent) => tent.id === id);
-        if(toUpdate !== undefined){
-          toUpdate.amountOfTents = newAmount;
-          if(checkOnChange){
-              checkTentValidity();
-          }
+        setShopData((oldData) => {
+            let newData = {...oldData};
+            newData.tents = oldData.tents.map((tent) => {
+                let newTent = {...tent}
+                if(tent.id === id){
+                    newTent.amountOfTents = newAmount;
+                }
+                return newTent;
+            });
+            return newData;
+        }); 
+        
+        
+        if(checkOnChange){
+            checkTentValidity();
         }
     }
+    
     calculateTentSuggestion(amountOfTickets);
     
     return (
@@ -105,7 +108,7 @@ function TentForm() {
                     <P>If you choose the to rent a tent from Ragnarock, you can leave all your tent-related stress at home - we will build it for you! <span className='text-accent_yellow'>The important thing everyone has a designated spot in their own tent.</span></P>
                 </div>
             </div>
-                {tentOptions.map((tentOption, index) => {
+                {shopData.tents.map((tentOption, index) => {
                     return (<OptionCard 
                         key={tentOption.id} 
                         {...tentOption} 
@@ -116,7 +119,7 @@ function TentForm() {
                         </OptionCard>)
                 })}
                 <div className='flex flex-row gap-4 justify-end'>
-                    {formValid? null : <ErrorP>Your currently only have space for {getAmountOfSpace()} out of {amountOfTickets} People!</ErrorP>}
+                    {formValid? null : <ErrorP>Your currently only have space for {ShopHelpers.getAvailableTentSpaces(shopData)} out of {amountOfTickets} People!</ErrorP>}
                     <SecondaryButton caption="Bring own Tents" action={noTents}></SecondaryButton>
                     <PrimaryButton caption="Confirm Selection" action={submitTentForm}></PrimaryButton>
                 </div>

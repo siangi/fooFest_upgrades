@@ -6,6 +6,7 @@ import OptionCard from '../../components/optionCards/OptionCard';
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import ErrorP from '../../components/typography/ErrorP';
 import H2 from '../../components/typography/H2';
+import ShopHelpers from "../../models/ShopHelpers"
 
 function TicketForm() {
   let navigate = useNavigate();
@@ -26,9 +27,9 @@ function TicketForm() {
   }
 
   function validate(){
-    const totalAmountOfTickets = ticketOptions.reduce((previous, current) => {return previous + current.amount}, 0);
-    setFormValid(totalAmountOfTickets > 0);
-    return totalAmountOfTickets > 0;
+    let valid = ShopHelpers.validateTicketAmount(shopData);
+    setFormValid(valid);
+    return valid;
   }
 
   function submit(event){

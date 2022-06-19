@@ -4,17 +4,15 @@ import { useState, useEffect } from 'react';
 function NumberStepper(props) {
     const [internalAmount, setInternalAmount] = useState(props.initialVal);
     
-    useEffect(() => {
-      props.updateAmount(internalAmount)
-    }, [internalAmount, props])
-    
     function increase(){
         setInternalAmount((oldVal) => oldVal + 1);
+        props.updateAmount(internalAmount + 1);
     }
 
     function decrease(){
         if(internalAmount > 0){
-            setInternalAmount((oldVal) => oldVal - 1)
+            setInternalAmount((oldVal) => oldVal - 1);
+            props.updateAmount(internalAmount - 1);
         }        
     }
     function handleManualChange(event){

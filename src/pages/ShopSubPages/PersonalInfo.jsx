@@ -6,6 +6,7 @@ import 'react-stacked-carousel/dist/index.css';
 import { ShopContext } from '../../contexts/ShopContext';
 import PersonFormContainer from '../../components/PersonFormContainer';
 import H2 from '../../components/typography/H2';
+import ShopHelpers from "../../models/ShopHelpers"
 
 
 function PersonalInfo() {
@@ -21,21 +22,13 @@ function PersonalInfo() {
     setShopData((oldData) => {
         let newData = {...oldData};
         newData.progress.activeStep = 3;
-        newData.progress.validator = validateByLength;
+        newData.progress.validator = () => ShopHelpers.validateAmountOfPersonForms(shopData);
         return newData;
     });
   }, [setShopData])
 
   function submitAll(){
     navigate("../basket")
-  }
-
-  // since only valid info forms are added to the array, 
-  // we can change if all info forms have been filled by
-  // checking the length of it. 
-  // this prevents doing a complicated validate() call on the person form.
-  function validateByLength(){
-    return shopData.persons.length === amountOfRegular + amountOfVIP;
   }
 
   function saveForm(personInfo){

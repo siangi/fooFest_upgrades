@@ -23,6 +23,7 @@ export const ShopProvider = ({ children }) => {
             imagePath: baseIconPath + "VIPGold.svg",
             amount: 0,
           }],
+        ownTents: false,
         tents: [
             {
                 id: 0,

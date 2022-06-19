@@ -10,6 +10,7 @@ import P from "../../components/typography/P";
 import H4 from "../../components/typography/H4";
 import H2 from "../../components/typography/H2";
 import axios from 'axios';
+import ShopHelpers from "../../models/ShopHelpers"
 
 function CampgroundForm() {
     const navigate = useNavigate();
@@ -41,7 +42,6 @@ function CampgroundForm() {
             available: "loading.."
         }
     ]);
-    const [activeCampground, setactiveCampground] = useState(null);
     const [formValid, setFormValid] = useState(true);
     const [checkOnChange, setcheckOnChange] = useState(false);
 
@@ -57,10 +57,14 @@ function CampgroundForm() {
             newData.progress.validator = validate;
             return newData;
         });
-    }, [])
-    
-    function amountOfTickets(){
-        return shopData.tickets.reduce((prev, cur) => prev + cur.amount, 0);
+    }, []);
+
+    function setactiveCampground(newCampground){
+        setShopData((oldData) => {
+            let newData = {...oldData};
+            newData.campground = newCampground;
+            return newData;
+        })
     }
 
     function displayFreeSpaces(NewCampgroundName){
@@ -79,7 +83,7 @@ function CampgroundForm() {
     }
 
     function validate(){
-        let isValid = activeCampground !== null && activeCampground.available > amountOfTickets();
+        let isValid = ShopHelpers.validateCampground(shopData);
 
         setFormValid(isValid);
         return isValid
@@ -89,11 +93,6 @@ function CampgroundForm() {
         event.preventDefault();
         setcheckOnChange(true);
         if(validate()){
-            setShopData((oldData) => {
-                let newData = {...oldData};
-                newData.campground = activeCampground;
-                return newData;
-            });
             navigate("../personal-info")
         } 
 
@@ -112,12 +111,12 @@ function CampgroundForm() {
     <H2 classModifiers="mb-10">Choose your campground</H2>
     <form className='grid grid-col-1 md:grid-col-2 gap-4'>
         <div className='col-start-1 md:max-h-96 w-full flex flex-col md:flex-row gap-4 bg-darkmode_black2 p-8'>
-            <CampgroundsMap value={activeCampground?.area} clickFunc={handleMapClick}></CampgroundsMap>
+            <CampgroundsMap value={shopData.campground?.area} clickFunc={handleMapClick}></CampgroundsMap>
             <div className='text-shade_darker_white md:w-1/3 break-words'>
                 <H4>Choose your campground</H4>
-                {activeCampground?
+                {shopData.campground?
                     <>
-                        <P classModifiers="font-bold mt-5">Avaliable spaces at {activeCampground.area}: <span className='font-medium text-accent_yellow'>{activeCampground.available}</span></P> 
+                        <P classModifiers="font-bold mt-5">Avaliable spaces at {shopData.campground.area}: <span className='font-medium text-accent_yellow'>{shopData.campground.available}</span></P> 
                     </>: null
                 }
                 

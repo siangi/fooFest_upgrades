@@ -2,16 +2,17 @@ import {React, useContext } from 'react';
 import { ShopContext } from '../../contexts/ShopContext';
 import BasketArticle from "./BasketArticle";
 import BasketTotal from './BasketTotal';
+import ShopHelpers  from "../../models/ShopHelpers";
 
 function BasketList(props) {
-  const {shopData } = useContext(ShopContext);
+  const { shopData } = useContext(ShopContext);
 
   function calculateTotal(){
     let subTotal = 0;
     subTotal += shopData.tickets.reduce((prev, cur) => prev + (cur.amount * cur.price), 0);
     subTotal += shopData.tents.reduce((prev, cur) => prev + (cur.price * cur.amountOfTents),0);
     if(shopData.greenCamping.selected){
-      subTotal += shopData.greenCamping.price * shopData.tickets.reduce((prev, cur) => prev + cur.amount, 0);
+      subTotal += shopData.greenCamping.price * ShopHelpers.getAmountOfAllTickets(shopData);
     } 
     subTotal += shopData.bookingFee.price;
     return subTotal;

@@ -6,6 +6,7 @@ import PaymentContainer from '../../components/paymentForms/PaymentContainer';
 import VisualTicket from '../../components/basket/VisualTicket'
 import H2 from '../../components/typography/H2';
 import P from '../../components/typography/P';
+import ShopHelpers from "../../models/ShopHelpers"
 
 function Basket() {
   const API_KEY = "62961c39c4d5c3756d35a3d6";
@@ -17,35 +18,39 @@ function Basket() {
     return axios.put("https://cphrt.herokuapp.com/reserve-spot", { area:shopData.campground.area, amount:shopData.tickets.reduce((prev, cur) => prev + cur.amount, 0)})
     .then((response) => {
       if (response.data.message === "Reserved"){
-        reservationID.current = response.data.id;
-        
+        console.log(response.data.id)
+        reservationID.current = response.data.id;        
       } else {
-
         console.error("unable to reserve spaces!", response);
       }
     });
   }
 
   async function fulfillReservation(goDeeper = true){
-    let returnVal = false;
-    if(reservationID !== ""){
+    
+    let fulfilled = false;
+    console.log(ShopHelpers.validateAll(shopData));
+    if(reservationID !== "" && ShopHelpers.validateAll(shopData)){
       await axios.post("https://cphrt.herokuapp.com/fullfill-reservation", {id: reservationID.current})
         .then((response) => {
           if (response.data.message === "Reservation completed"){
             saveShopData();
-            returnVal = true;
+            
+            fulfilled = true;            
           } 
-      });
-
-      if(!returnVal && goDeeper){
+          console.log(response);
+        }).catch((error) => console.error(error));
+  
+      if((!fulfilled) && goDeeper){
           // if the reservation expired try to make a new one, if that one fails, the user has to choose 
           // a different campground.
-          returnVal = await reserveSpots().then(() => fulfillReservation(false));         
+          console.log("went further")
+          fulfilled = await reserveSpots().then(() => fulfillReservation(false)).catch((error) => console.error(error));         
       } else if (!goDeeper) {
-          returnVal = false;
+          fulfilled = false;
       }
     }
-    return returnVal;
+    return fulfilled;
   }
 
   function saveShopData(){
