@@ -6,7 +6,7 @@ function getAmountOfAllTickets(dataContext) {
 }
 
 function validateAmountOfPersonForms(dataContext) {
-    return dataContext.persons.length === getAmountOfAllTickets(dataContext);
+    return dataContext.persons.length >= getAmountOfAllTickets(dataContext);
 }
 
 function validateTicketAmount(dataContext){
@@ -18,18 +18,30 @@ function getAvailableTentSpaces(dataContext){
 }
 
 function validateTentChoice(dataContext){
-    return getAvailableTentSpaces(dataContext) >= getAmountOfAllTickets(dataContext);
+    return dataContext.ownTents || (getAvailableTentSpaces(dataContext) >= getAmountOfAllTickets(dataContext));
 }
 
 function validateCampground(dataContext){
     return dataContext.campground !== null && dataContext.campground.available > getAmountOfAllTickets(dataContext)
 }
 
-function validateAll(dataContext){
-    return (validateTicketAmount(dataContext) &&
-    validateAmountOfPersonForms(dataContext) &&
-    validateTentChoice(dataContext) &&
-    validateCampground(dataContext))
+function validateAllWithMessage(dataContext){
+    const messages = [];
+    if (!validateTicketAmount(dataContext)){
+        messages.push("you must purchase at least one ticket");
+        // if there are no tickets, just leave because all the others are gonna be invalid too.
+        return messages.join("")
+    }
+    if(!validateTentChoice(dataContext)){
+        messages.push("you have not ordered enough tents for all people!");
+    }
+    if(!validateAmountOfPersonForms(dataContext)){
+        messages.push("you have not entered all personal info!");
+    }
+    if(!validateCampground(dataContext)){
+        messages.push("there is not enough space on the campground you chose!");
+    }
+    return messages.join(", ");
 }
 
 const ShopHelpers = {
@@ -39,7 +51,7 @@ const ShopHelpers = {
     getAvailableTentSpaces,
     validateTentChoice,
     validateCampground,
-    validateAll
+    validateAllWithMessage
 }
 
 export { ShopHelpers as default};

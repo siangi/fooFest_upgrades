@@ -10,12 +10,12 @@ function PaymentContainer(props) {
   const navigate = useNavigate();
 
   async function onSubmit(){
-    let confirmed = await props.confirmReservation()
-    if(confirmed){
+    let status = await props.confirmReservation();
+    if(status === "confirmed"){
       navigate("/confirmation");
-    } else {
-      console.error("not fulfilled in function");
     }
+
+    return status;
   }
   return (
     <div className='h-full'>

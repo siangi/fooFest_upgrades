@@ -18,7 +18,6 @@ function Basket() {
     return axios.put("https://cphrt.herokuapp.com/reserve-spot", { area:shopData.campground.area, amount:shopData.tickets.reduce((prev, cur) => prev + cur.amount, 0)})
     .then((response) => {
       if (response.data.message === "Reserved"){
-        console.log(response.data.id)
         reservationID.current = response.data.id;        
       } else {
         console.error("unable to reserve spaces!", response);
@@ -27,30 +26,33 @@ function Basket() {
   }
 
   async function fulfillReservation(goDeeper = true){
-    
+    let status = "unsuccessful";
     let fulfilled = false;
-    console.log(ShopHelpers.validateAll(shopData));
-    if(reservationID !== "" && ShopHelpers.validateAll(shopData)){
+
+    const validationResult = ShopHelpers.validateAllWithMessage(shopData);
+    if(validationResult !== ""){
+      return status + ", " + validationResult;
+    }
+
+    if(reservationID !== ""){
       await axios.post("https://cphrt.herokuapp.com/fullfill-reservation", {id: reservationID.current})
         .then((response) => {
           if (response.data.message === "Reservation completed"){
             saveShopData();
-            
+            status = "confirmed";
             fulfilled = true;            
           } 
-          console.log(response);
         }).catch((error) => console.error(error));
   
       if((!fulfilled) && goDeeper){
           // if the reservation expired try to make a new one, if that one fails, the user has to choose 
           // a different campground.
-          console.log("went further")
           fulfilled = await reserveSpots().then(() => fulfillReservation(false)).catch((error) => console.error(error));         
       } else if (!goDeeper) {
           fulfilled = false;
       }
     }
-    return fulfilled;
+    return status;
   }
 
   function saveShopData(){

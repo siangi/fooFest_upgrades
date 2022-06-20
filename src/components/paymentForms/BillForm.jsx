@@ -34,7 +34,7 @@ function BillForm(props) {
         key={preset.id}
         billing={true}
         default={preset}
-        submitAll={() => {props.onSubmit();}}
+        submitAll={() => {return props.onSubmit();}}
         saveForm={() => {}}
       ></PersonForm>
     </div>

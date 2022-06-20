@@ -9,7 +9,7 @@ function MobilePayForm(props) {
   function handleSubmit(event){
     event.preventDefault(); 
     if(form.current.reportValidity()){
-      props.onSubmit();
+      return props.onSubmit();
     }
   }
 

@@ -84,7 +84,6 @@ function CampgroundForm() {
 
     function validate(){
         let isValid = ShopHelpers.validateCampground(shopData);
-
         setFormValid(isValid);
         return isValid
     }
@@ -95,7 +94,7 @@ function CampgroundForm() {
         if(validate()){
             navigate("../personal-info")
         } 
-
+        validate();
     }
 
     function setCampsGreenly(value){
@@ -118,9 +117,7 @@ function CampgroundForm() {
                     <>
                         <P classModifiers="font-bold mt-5">Avaliable spaces at {shopData.campground.area}: <span className='font-medium text-accent_yellow'>{shopData.campground.available}</span></P> 
                     </>: null
-                }
-                
-                
+                }                             
             </div>    
         </div>
         <div className='col-start-1 md:col-start-2'>

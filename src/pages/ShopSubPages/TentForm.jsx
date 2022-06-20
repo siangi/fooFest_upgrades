@@ -56,7 +56,10 @@ function TentForm() {
         setShopData((oldData) => {
             let newData = {...oldData};
             newData.ownTents = true;
-            newData.tents = oldData.tents.map((tentOption) => tentOption.amountOfTents = -1);
+            newData.tents = oldData.tents.map((tentOption) => {
+                tentOption.amountOfTents = 0
+                return tentOption;
+            });
             return newData;
         })
         navigate("../campground");

@@ -22,7 +22,7 @@ function PersonForm(props) {
     event.preventDefault();
     if(form.current.reportValidity()){
       props.saveForm(createObjectFromForm());
-      props.submitAll();
+      return props.submitAll();
     }
   }
 
